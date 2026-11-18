@@ -7,6 +7,12 @@ A small C++ project that will find a route through a maze.
 - Represent a maze as a two-dimensional grid
 - Display the maze in the terminal
 
+## Day 2
+
+- Load a maze from a text file
+- Check that rows have equal widths
+- Check for valid symbols and exactly one start and exit
+
 ## Legend
 
 - `#` is a wall
