@@ -13,6 +13,11 @@ A small C++ project that will find a route through a maze.
 - Check that rows have equal widths
 - Check for valid symbols and exactly one start and exit
 
+## Day 3
+
+- Find a shortest path from `S` to `E` using breadth-first search
+- Display the route with `*` and report its length
+
 ## Legend
 
 - `#` is a wall
