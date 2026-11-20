@@ -1,10 +1,9 @@
-#include <algorithm>
+#include <deque>
+#include <fstream>
 #include <iostream>
-#include <queue>
 #include <string>
 #include <utility>
 #include <vector>
-#include <fstream>
 
 using Position = std::pair<int, int>;
 
@@ -61,7 +60,7 @@ bool load_maze(
         return false;
     }
 
-    std::size_t expected_width = maze[0].size();
+    const std::size_t expected_width = maze[0].size();
 
     for (std::size_t row = 0; row < maze.size(); ++row) {
         if (maze[row].size() != expected_width) {
@@ -89,11 +88,11 @@ bool solve_maze(
     std::vector<std::string>& maze,
     Position start,
     Position exit,
+    bool use_bfs,
     int& path_length
 ) {
     const int rows = static_cast<int>(maze.size());
     const int columns = static_cast<int>(maze[0].size());
-
     const Position unvisited = {-1, -1};
 
     std::vector<std::vector<Position>> previous(
@@ -101,16 +100,23 @@ bool solve_maze(
         std::vector<Position>(columns, unvisited)
     );
 
-    std::queue<Position> locations;
-    locations.push(start);
+    std::deque<Position> frontier;
+    frontier.push_back(start);
     previous[start.first][start.second] = start;
 
     const int row_change[] = {-1, 1, 0, 0};
     const int column_change[] = {0, 0, -1, 1};
 
-    while (!locations.empty()) {
-        Position current = locations.front();
-        locations.pop();
+    while (!frontier.empty()) {
+        Position current;
+
+        if (use_bfs) {
+            current = frontier.front();
+            frontier.pop_front();
+        } else {
+            current = frontier.back();
+            frontier.pop_back();
+        }
 
         if (current == exit) {
             break;
@@ -133,7 +139,7 @@ bool solve_maze(
             }
 
             previous[next_row][next_column] = current;
-            locations.push({next_row, next_column});
+            frontier.push_back({next_row, next_column});
         }
     }
 
@@ -150,11 +156,15 @@ bool solve_maze(
     }
 
     path.push_back(start);
-    std::reverse(path.begin(), path.end());
+
+    for (std::size_t left = 0, right = path.size() - 1; left < right; ++left, --right) {
+        Position temporary = path[left];
+        path[left] = path[right];
+        path[right] = temporary;
+    }
 
     path_length = static_cast<int>(path.size()) - 1;
 
-    // Mark the path without replacing the start or exit.
     for (Position position : path) {
         char& cell = maze[position.first][position.second];
 
@@ -194,18 +204,34 @@ int main() {
         return 1;
     }
 
+    std::cout << "\nChoose a solving method:\n";
+    std::cout << "1. Breadth-first search (shortest route)\n";
+    std::cout << "2. Depth-first search (route not guaranteed shortest)\n";
+    std::cout << "Your choice: ";
+
+    int choice;
+    if (!(std::cin >> choice) || (choice != 1 && choice != 2)) {
+        std::cout << "Please enter 1 or 2.\n";
+        return 1;
+    }
+
+    const bool use_bfs = (choice == 1);
     int path_length = 0;
 
-    if (!solve_maze(maze, start, exit, path_length)) {
+    if (!solve_maze(maze, start, exit, use_bfs, path_length)) {
         std::cout << "\nNo path from S to E was found.\n\n";
         display_maze(maze);
         return 0;
     }
 
-    std::cout << "\nShortest route found!\n";
+    if (use_bfs) {
+        std::cout << "\nBreadth-first search found a shortest route.\n";
+    } else {
+        std::cout << "\nDepth-first search found a route.\n";
+    }
+
     std::cout << "Path length: " << path_length << " steps\n\n";
     display_maze(maze);
-
     std::cout << "\nLegend: # = wall, . = open path, "
                  "S = start, E = exit, * = route\n";
 
