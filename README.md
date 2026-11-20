@@ -18,6 +18,11 @@ A small C++ project that will find a route through a maze.
 - Find a shortest path from `S` to `E` using breadth-first search
 - Display the route with `*` and report its length
 
+## Day 4
+
+- Choose between breadth-first search and depth-first search
+- BFS finds a shortest route; DFS may find a different, longer route
+
 ## Legend
 
 - `#` is a wall
