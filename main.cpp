@@ -89,7 +89,8 @@ bool solve_maze(
     Position start,
     Position exit,
     bool use_bfs,
-    int& path_length
+    int& path_length,
+    int& visited_count
 ) {
     const int rows = static_cast<int>(maze.size());
     const int columns = static_cast<int>(maze[0].size());
@@ -103,6 +104,7 @@ bool solve_maze(
     std::deque<Position> frontier;
     frontier.push_back(start);
     previous[start.first][start.second] = start;
+    visited_count = 0;
 
     const int row_change[] = {-1, 1, 0, 0};
     const int column_change[] = {0, 0, -1, 1};
@@ -117,6 +119,8 @@ bool solve_maze(
             current = frontier.back();
             frontier.pop_back();
         }
+
+        ++visited_count;
 
         if (current == exit) {
             break;
@@ -206,7 +210,7 @@ int main() {
 
     std::cout << "\nChoose a solving method:\n";
     std::cout << "1. Breadth-first search (shortest route)\n";
-    std::cout << "2. Depth-first search (route not guaranteed shortest)\n";
+    std::cout << "2. Depth-first search (route may not be shortest)\n";
     std::cout << "Your choice: ";
 
     int choice;
@@ -217,9 +221,13 @@ int main() {
 
     const bool use_bfs = (choice == 1);
     int path_length = 0;
+    int visited_count = 0;
 
-    if (!solve_maze(maze, start, exit, use_bfs, path_length)) {
-        std::cout << "\nNo path from S to E was found.\n\n";
+    if (!solve_maze(
+            maze, start, exit, use_bfs, path_length, visited_count
+        )) {
+        std::cout << "\nNo path from S to E was found.\n";
+        std::cout << "Cells explored: " << visited_count << "\n\n";
         display_maze(maze);
         return 0;
     }
@@ -230,8 +238,10 @@ int main() {
         std::cout << "\nDepth-first search found a route.\n";
     }
 
-    std::cout << "Path length: " << path_length << " steps\n\n";
+    std::cout << "Path length: " << path_length << " steps\n";
+    std::cout << "Cells explored: " << visited_count << "\n\n";
     display_maze(maze);
+
     std::cout << "\nLegend: # = wall, . = open path, "
                  "S = start, E = exit, * = route\n";
 
