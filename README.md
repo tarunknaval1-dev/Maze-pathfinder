@@ -1,35 +1,58 @@
-# Maze-pathfinder
+# C++ Maze Pathfinder
 
-A small C++ project that will find a route through a maze.
+A command-line program that loads a maze from a text file and searches for a route from the start to the exit.
 
-## Day 1
-
-- Represent a maze as a two-dimensional grid
-- Display the maze in the terminal
-
-## Day 2
+## Features
 
 - Load a maze from a text file
-- Check that rows have equal widths
-- Check for valid symbols and exactly one start and exit
+- Check that the maze is rectangular and contains valid symbols
+- Require exactly one start (`S`) and one exit (`E`)
+- Solve with breadth-first search (BFS) or depth-first search (DFS)
+- Display the route and report its length and explored-cell count
 
-## Day 3
+BFS finds a shortest route. DFS finds a route if one is available, but it may not be the shortest.
 
-- Find a shortest path from `S` to `E` using breadth-first search
-- Display the route with `*` and report its length
+## Maze symbols
 
-## Day 4
+- `#` — wall
+- `.` — open space
+- `S` — start
+- `E` — exit
+- `*` — route displayed by the program
 
-- Choose between breadth-first search and depth-first search
-- BFS finds a shortest route; DFS may find a different, longer route
+## Build and run
 
-## Legend
+Requires a C++17 compiler.
 
-- `#` is a wall
-- `.` is an open space
-- `S` is the starting point
-- `E` is the exit
+With `g++`, build the program:
+
+```bash
+g++ -std=c++17 main.cpp -o maze
+```
+
+Run it from the project folder so it can find `maze.txt`:
+
+```bash
+./maze
+```
+
+On Windows, the executable may be named `maze.exe`; run it with:
+
+```powershell
+.\maze.exe
+```
+
+Enter a maze filename when prompted, or press Enter to use `maze.txt`. Then choose `1` for BFS or `2` for DFS.
+
+## Sample mazes
+
+- `maze.txt` — a maze with a route
+- `maze_no_path.txt` — a maze with no route
 
 ## Project status
 
-This project is being built in stages. A C++ compiler is needed to run it.
+This project was built in stages as a C++ learning project. It has not been compiled or tested on a computer without a C++ compiler.
+
+## Author
+
+Tarun Kumar naval
