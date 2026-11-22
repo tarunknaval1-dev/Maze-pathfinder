@@ -246,4 +246,5 @@ int main() {
                  "S = start, E = exit, * = route\n";
 
     return 0;
+    
 }
